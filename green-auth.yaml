@@ -1,0 +1,127 @@
+#!/usr/bin/env ansible-playbook
+
+- name: green-auth
+  hosts: green-auth
+  become: true
+  tasks:
+    - name: Create project directory and copy everything
+      synchronize:
+        src: ./
+        dest: /opt/green-auth
+        checksum: true
+
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+
+    - name: Preinstallation process
+      package:
+        name:
+          - ca-certificates
+          - curl
+          - nginx
+          - docker-compose
+
+    - name: Add Docker GPG-key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repo
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+
+    - name: Update apt and install docker
+      package:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: latest
+
+    - name: Create project directory
+      file:
+        path: /etc/green-auth
+        state: directory
+
+    - name: Check if DB secret already exists
+      stat:
+        path: /etc/green-auth/.db-secret
+      register: db_secret
+
+    - name: Create DB secret
+      shell:
+        cmd: "openssl rand -base64 32 > /etc/green-auth/.db-secret"
+      when: db_secret.stat.exists == False
+
+    - name: Copy nginx certificates Pt.1
+      copy:
+        src: /opt/green-auth/configs/nginx/yourCrtName.crt  # Input here your .crt name
+        dest: /etc/ssl/certs/yourCrtName.crt  # Input here your .crt name
+        remote_src: true
+
+    - name: Copy nginx certificates Pt.2
+      copy:
+        src: /opt/green-auth/configs/nginx/yourCrtName.key  # Input here your .key name
+        dest: /opt/configs/nginx/yourCrtName.key  # Input here your .key name
+        remote_src: true
+
+    - name: Copy nginx configs Pt.1
+      copy:
+        src: /opt/green-auth/configs/nginx/green-auth.service.com.conf  # Change the name to your host
+        dest: /etc/nginx/conf.d
+        remote_src: true
+
+    - name: Copy nginx configs Pt.2
+      copy:
+        src: /opt/green-auth/configs/nginx/default.conf
+        dest: /etc/nginx/conf.d
+        remote_src: true
+
+    - name: Set logrotate for /var/log directory
+      copy:
+        src: /opt/green-auth/configs/green-auth-service_rotate.conf
+        dest: /etc/logrotate.d
+        remote_src: true
+
+    - name: Set logrotate for Docker
+      copy:
+        src: /opt/green-auth/configs/daemon.json
+        dest: /etc/docker
+        remote_src: true
+
+    - name: Download node_exporter
+      get_url:
+        url: https://github.com/prometheus/node_exporter/releases/download/v1.1.0/node_exporter-1.1.0.linux-amd64.tar.gz
+        dest: /opt
+
+    - name: Configuring node_exporter
+      unarchive:
+        src: /opt/node_exporter-1.1.0.linux-amd64.tar.gz
+        dest: /opt
+        remote_src: true
+
+    - name: Setting node_exporter-service config
+      copy:
+        src: /opt/green-auth/configs/node_exporter.service
+        dest: /etc/systemd/system
+        remote_src: true
+
+    - name: Starting node_exporter
+      systemd:
+        name: node_exporter
+        enabled: yes
+        state: started
+        daemon_reload: yes
+
+    - name: Start server and Telegram Bot via Docker-Compose
+      docker_compose:
+        project_src: /opt/green-auth/
+
+    - name: Start NGINX
+      systemd:
+        name: nginx
+        enabled: yes
+        state: started
+        daemon_reload: yes

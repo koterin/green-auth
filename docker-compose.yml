@@ -1,0 +1,51 @@
+version: "3.5"
+
+volumes:
+  green-db-volume:
+    name: green-db-volume
+
+services:
+  green-db:
+    hostname: green-db
+    container_name: green-db
+    hostname: green-db
+    image: "postgres:14"
+    restart: "unless-stopped"
+    environment:
+      - POSTGRES_DB=green-db
+      - POSTGRES_USER=green-manager
+      - POSTGRES_PASSWORD_FILE=/etc/green-auth/.db-secret
+    volumes:
+      - /etc/green-auth/.db-secret:/etc/green-auth/.db-secret:ro
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - green-db-volume:/var/lib/postgresql/data
+
+  green-server:
+    hostname: green-server
+    container_name: green-server
+    image: "green-server"
+    build: ./server
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - green-db
+    environment:
+      - DB_HOST=green-db
+      - DB_USER=green-auth
+      - DB_PORT=5432
+      - DB_PASSWORD_FILE=/green-auth/.db-secret
+      - DB_NAME=green-db
+      - TG_API_URL=https://api.telegram.org/
+      - TG_BOT_KEY=[YOUR_KEY]  # Add here your TG-bot key
+    volumes:
+      - /etc/green-auth/.db-secret:/green-auth/.db-secret:ro
+
+  green-bot:
+    hostname: green-bot
+    image: "green-bot"
+    container_name: green-bot
+    build: ./telegram
+    restart: unless-stopped
+    environment:
+      - TG_BOT_KEY=[YOUR_KEY]  # Add here your TG-bot key

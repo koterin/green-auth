@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PasswordManager</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body class=dark-theme>
+  <h1>Бери Заряд!</h1>
+  <h2>PasswordManager</h2>
+  <p><br><br></p>
+  <p>Введите код, отправленный пользователю</p>
+  <p id="previousEmail">this</p>
+    <p><br></p>
+    <input type="text" id="codeField" name="codeField"
+         pattern="[0-9]{7,7}"
+         maxlength="7" minlength="7" size="7"
+         required autofocus></input>
+    <p id="infoField"></p>
+    <p id="timerTextField" class="info"> </p><p id="timerField" class="info"></p>
+  <div>
+    <button class="btn" id="sendBtn" disabled>Отправить код еще раз</button>
+  </div>
+  <div>
+    <button class="tgl" id=tglBtn>Light</button>
+    <button class="back" id=backBtn>&#8592;</button>
+  </div>
+  <script src="theme.js"></script>
+  <script src="auth.js"></script>
+  <noscript>You need to enable JavaScript to view the full site.</noscript>
+</body>
+</html>
+
