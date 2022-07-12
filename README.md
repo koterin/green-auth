@@ -156,7 +156,7 @@ Instead of asking for a login input it waits for the number of accounts to be cr
 
 Logins for the accounts created this way will be all sequential: `green25`, etc.
 
-#### Swagger
+### Swagger
 
 Another feature of the site - swagger firewalling.
 
