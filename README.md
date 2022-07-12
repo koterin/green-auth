@@ -172,9 +172,9 @@ Put your swagger-definition file in the `/server/static/swagger/swagger.yaml` an
 ```
 docker exec -it green-server sh
 ```
-(`sh` - because server uses the bullseye Linux image which does not have `bash`)
+>(`sh` - because server uses the bullseye Linux image which does not have `bash`)
 Next download some text editor, like this:
 ```
 apt-get install vim
 ```
-and happily edit your files inside. Remember, if you rebuild the container you'll have to install vim again.
+>and happily edit your files inside. Remember, if you rebuild the container you'll have to install vim again.
