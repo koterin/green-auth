@@ -1,6 +1,6 @@
 'use strict';
 
-const previousEmail = document.getElementById('previousEmail');
+const previousLogin = document.getElementById('previousLogin');
 const codeField = document.getElementById('codeField');
 const sendBtn = document.getElementById('sendBtn');
 const infoField = document.getElementById('infoField');
@@ -9,13 +9,11 @@ const timerField = document.getElementById('timerField');
 const timerLimit = 30;
 const backBtn = document.getElementById('backBtn');
 
-const sendCodeUrlProd = 'https://password.berizaryad.ru/api/sendCode';
-const sendCodeUrlTest = 'http://test.password.ru/api/sendCode';
-const validateCodeUrlProd = 'https://password.berizaryad.ru/api/validateCode';
-const validateCodeUrlTest = 'http://test.password.ru/api/validateCode';
+const sendCodeUrlProd = 'https://green.auth.ktrn.com/api/sendCode';
+const validateCodeUrlProd = 'https://green.auth.ktrn.com/api/validateCode';
 
 window.onload = () => {
-    if (localStorage.getItem('email') == null) {
+    if (localStorage.getItem('login') == null) {
         location.href = "index.html";
     }
 
@@ -23,7 +21,7 @@ window.onload = () => {
 }
 
 document.addEventListener("DOMContentLoaded", startTimer);
-previousEmail.innerHTML = localStorage.getItem('email');
+previousLogin.innerHTML = localStorage.getItem('login');
 
 backBtn.addEventListener('click', pageBack);
 sendBtn.addEventListener('click', sendCode);
@@ -38,29 +36,29 @@ codeField.addEventListener('input', function (event) {
 });
 
 function errorSendCodeMsg() {
-    infoField.innerHTML = "при отправке кода что-то пошло не так. давай еще";
+    infoField.innerHTML = "something went wrong while sending code. c`mon again";
 }
 
 function errorWrongCodeMsg() {
-    infoField.innerHTML = "ой-ёй. а код не подходит";
+    infoField.innerHTML = "ouch. that's a wrong code";
 }
 
 function errorAttemptsLimitMsg() {
-    infoField.innerHTML = "надо получить новый код";
+    infoField.innerHTML = "you gotta get a new code";
 }
 
 function errorSendCodeLimitMsg() {
-    infoField.innerHTML = "получить код больше 5 раз в 5 минут нельзя. подождем";
+    infoField.innerHTML = "you can't get more than 5 codes in 5 minutes.\nlet's wait";
 }
 
 function startTimer() {
-    timerTextField.innerHTML = "Повторно запросить код можно через: &nbsp";
+    timerTextField.innerHTML = "You can ask for another code after: &nbsp";
     var seconds = countdownTimer(timerLimit);
     var interval = setInterval(() => {
         seconds = countdownTimer(seconds);
         if (seconds == 0) {
             clearInterval(interval);
-            timerTextField.innerHTML = "Код просрочен";
+            timerTextField.innerHTML = "Code is outdated";
             timerField.innerHTML = "";
             sendBtn.disabled = false;
             codeField.disabled = false;
@@ -79,7 +77,7 @@ function pageBack() {
 
 async function sendCode() {
     var requestBody = {
-        email : localStorage.getItem('email')
+        login : localStorage.getItem('login')
     }
     var jsonBody = JSON.stringify(requestBody);
 
@@ -87,7 +85,6 @@ async function sendCode() {
     infoField.innerHTML = "";
     codeField.value = "";
 
-    // TEST / PROD
     fetch(sendCodeUrlProd, {
         method: 'POST',
         body: jsonBody,
@@ -119,13 +116,12 @@ async function sendCode() {
 
 async function validateCode() {
     var requestBody = {
-        email : localStorage.getItem('email'),
+        login : localStorage.getItem('login'),
         code : codeField.value
     }
     var jsonBody = JSON.stringify(requestBody);
     console.log(jsonBody);
 
-    // TEST / PROD
     fetch(validateCodeUrlProd, {
         method: 'POST',
         body: jsonBody,

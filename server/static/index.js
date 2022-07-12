@@ -1,71 +1,71 @@
 'use strict';
 
-const emailField = document.getElementById('emailField');
+const loginField = document.getElementById('loginField');
 const proceedBtn = document.getElementById('proceedBtn');
-const emailValidateMsg = document.getElementById('emailValidateMsg');
+const loginValidateMsg = document.getElementById('loginValidateMsg');
 const qrCode = document.getElementById('qr');
 
-const checkEmailUrlProd = 'https://password.berizaryad.ru/api/checkEmail';
-const sendCodeUrlProd = 'https://password.berizaryad.ru/api/sendCode';
-const TelegramBotUrl = 'https://t.me/berizaryad_password_manager_bot';
+const checkLoginUrlProd = 'https://green.auth.ktrn.com/api/checkLogin';  // Change to your URL
+const sendCodeUrlProd = 'https://green.auth.ktrn.com/api/sendCode';  // Change to your URL
+const TelegramBotUrl = 'https://t.me/berizaryad_green_auth_bot';  // Change to your Bot API URL
 
-// Autocompletion - last used email is being filled in 
+// Autocompletion - last used login is being filled in 
 window.onload = () => {
-    emailField.value = localStorage.getItem('email'); 
+    loginField.value = localStorage.getItem('login'); 
 
-    if (emailField.checkValidity()) {
+    if (loginField.checkValidity()) {
         proceedBtn.disabled = false;
     } else {
         proceedBtn.disabled = true;
     }
 }
 
-proceedBtn.addEventListener('click', checkEmail);
+proceedBtn.addEventListener('click', checkLogin);
 qrCode.addEventListener('click', openTG);
 
-// Disable button if email is not valid
-emailField.addEventListener('keyup', function (event) {
-    if (emailField.checkValidity()) {
+// Disable button if login is not valid
+loginField.addEventListener('keyup', function (event) {
+    if (loginField.checkValidity()) {
         proceedBtn.disabled = false;
     } else {
         proceedBtn.disabled = true;
     }
-    clearErrorEmailMsg();
+    clearErrorLoginMsg();
 });
 
-function errorEmailMsg() {
-    emailValidateMsg.innerHTML = "по этой почте вход запрещен";
+function errorLoginMsg() {
+    loginValidateMsg.innerHTML = "incorrect login";
 }
 
 function errorSendCodeMsg() {
-    emailValidateMsg.innerHTML = "при отправке кода что-то пошло не так. давай еще";
+    loginValidateMsg.innerHTML = "something went wrong while sending code. c`mon again";
 }
 
 function errorSendCodeLimitMsg() {
-    emailValidateMsg.innerHTML = "получить код больше 5 раз в 5 минут нельзя.\nподождем";
+    loginValidateMsg.innerHTML = "you can't get more than 5 codes in 5 minutes.\nlet's wait";
 }
 
-function clearErrorEmailMsg() {
-    emailValidateMsg.innerHTML = "";
+function clearErrorLoginMsg() {
+    loginValidateMsg.innerHTML = "";
 }
 
 function errorReloadPageMsg() {
-    emailValidateMsg.innerHTML = "ой-ёй, что-то не то. надо обновить страницу";
+    loginValidateMsg.innerHTML = "yay, something's wrong. reload the page";
 }
 
 function openTG() {
     location.href = TelegramBotUrl;
 }
 
-// POST /api/checkEmail
-async function checkEmail() {
-    var userEmail = emailField.value;
+// POST /api/checkLogin
+async function checkLogin() {
+    var userLogin = loginField.value;
     var requestBody = {
-        email : userEmail
+        login : userLogin
     }
     var jsonBody = JSON.stringify(requestBody);
 
-    fetch(checkEmailUrlProd, {
+    fetch(checkLoginUrlProd, {
         method: 'POST',
         body: jsonBody,
         headers: {
@@ -77,13 +77,13 @@ async function checkEmail() {
        .then(function (response) {
             if (response.status == '200') {
                 console.log("Hey, I know you!");
-                localStorage.setItem('email', userEmail);
+                localStorage.setItem('login', userLogin);
                 location.href = "authenticate.html";
                 return;
             } else if (response.status == '400') {
                 console.log("Go away, Stranger");
                 proceedBtn.disabled = true;
-                errorEmailMsg();
+                errorLoginMsg();
                 return Promise.reject(response.status);
             } else {
                 console.log("Internal Error");

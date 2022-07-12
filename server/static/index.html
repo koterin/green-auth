@@ -4,28 +4,28 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PasswordManager</title>
+  <title>GreenAuth</title>
   <link rel="stylesheet" href="main.css">
 </head>
 <body class=dark-theme>
-  <h1>Бери Заряд!</h1>
-  <h2>PasswordManager</h2>
+  <h1>GreenAuth</h1>
+  <h2>authorization service</h2>
   <p><br><br></p>
-  <p>Надо бы авторизоваться. Давай через почту?</p>
+  <p>Gotta authorize. Input your login</p>
     <p><br></p>
-    <input type="input" id="emailField" name="emailField"
-        placeholder="Введите корпоративную почту"
-        pattern="[a-z.]+@berizaryad.ru"
+    <input type="input" id="loginField" name="loginField"
+        placeholder="Input your login"
+        pattern="[a-z.]"
         maxlength="100" size="28"
         required autofocus autocomplete="on"></input>
-    <p id="emailValidateMsg"></p>
+    <p id="loginValidateMsg"></p>
     <p><br></p>
     <div>
-      <button class="btn" id="proceedBtn" disabled>Продолжить</button>
+      <button class="btn" id="proceedBtn" disabled>Proceed</button>
     </div>
     <div class=imgDiv>
-      <img id=qr src="images/tg_qr.png" alt="Тут должен был быть QR-код на бота, но что-то пошло не так">
-      <span>Ссылка на Телеграм-бота для авторизации</span>
+      <img id=qr src="images/tg_qr.png" alt="There was supposed to be QR-code for TG Bot, but smth went wrong">
+      <span>Link to the Telegram Authorization Bot</span>
     </div>
     <div>
       <button class="tgl" id=tglBtn>Light</button>

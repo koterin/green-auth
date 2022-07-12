@@ -4,20 +4,20 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PasswordManager</title>
+  <title>GreenAuth</title>
   <link rel="stylesheet" href="main.css">
 </head>
 <body class=dark-theme>
-  <h1>Бери Заряд!</h1>
-  <h2>PasswordManager</h2>
+  <h1>GreenAuth</h1>
+  <h2>authorization service</h2>
   <div>
       <table>
         <tr>
-          <th>Сервисная карта</th>
+          <th>Password generation</th>
           <th>Swagger</th>
         </tr>
         <tr>
-          <td class="td"><button class="btn" id="getFileBtn" enabled>Показать учетные записи</button>
+          <td class="td"><button class="btn" id="getFileBtn" enabled>Show account list</button>
               <p></p> 
 	  </td>
           <td><button class="btn" id="swaggerBtn" enabled>Swagger UI</button>
@@ -25,15 +25,15 @@
 	  </td>
         </tr>
         <tr>
-          <td><button class="btn" id="addPassBtn" enabled>Добавить новую учетную запись</button>
+          <td><button class="btn" id="addPassBtn" enabled>Add new account</button>
               <p id="infoField" class=infoField></p>
           </td>
-          <td><button class="btn" id="swaggerRawBtn" enabled>Исходники</button>
+          <td><button class="btn" id="swaggerRawBtn" enabled>Raw Swagger</button>
               <p></p>
           </td>
         </tr>
         <tr>
-          <td class="td"><button class="btn" id="multiAddPassBtn" enabled>Добавить несколько записей</button>
+          <td class="td"><button class="btn" id="multiAddPassBtn" enabled>Add multiple accounts</button>
               <p id="infoField2" class=infoField></p>
 	  </td>
           <td></td>
@@ -42,11 +42,11 @@
   <div class="center">
     <p id="loader"></p>
     <p class="scrollabletextbox" id=textContent></p>
-    <p id="loginInputMsg">Введите новый логин</p>
+    <p id="loginInputMsg">Insert new login</p>
     <input type=input id=loginInput></input>
     <p id=loginValidateMsg></p>
-    <button class="btn" id=genPassBtn>Сгенерировать пароль</button>
-    <button class="btn" id=multiGenPassBtn>Сгенерировать пароли</button>
+    <button class="btn" id=genPassBtn>Generate password</button>
+    <button class="btn" id=multiGenPassBtn>Generate passwords</button>
   <div>
   <button class="tgl" id=tglBtn>Light</button>
   <button class="back" id=backBtn>&#8592;</button>

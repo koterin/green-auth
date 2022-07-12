@@ -25,12 +25,12 @@ const modalMsg = document.getElementById('modalMsg');
 const clipPassBtn = document.getElementById('clipPassBtn');
 const clipPassesBtn = document.getElementById('clipPassesBtn');
 
-const getFileUrlProd = 'https://password.berizaryad.ru/api/getFile';
-const addPassUrlProd = 'https://password.berizaryad.ru/api/addPass';
-const genPassUrlProd = 'https://password.berizaryad.ru/api/generatePass';
-const multiGenPassUrlProd = 'https://password.berizaryad.ru/api/multiGeneratePass';
-const swaggerUrlProd = 'https://password.berizaryad.ru/swagger';
-const swaggerRawLink = 'https://password.berizaryad.ru/swagger/swagger.yaml';
+const getFileUrlProd = 'https://green.auth.ktrn.com/api/getFile';
+const addPassUrlProd = 'https://green.auth.ktrn.com/api/addPass';
+const genPassUrlProd = 'https://green.auth.ktrn.com/api/generatePass';
+const multiGenPassUrlProd = 'https://green.auth.ktrn.com/api/multiGeneratePass';
+const swaggerUrlProd = 'https://green.auth.ktrn.com/swagger';
+const swaggerRawLink = 'https://green.auth.ktrn.com/swagger/swagger.yaml';
 
 getFileBtn.addEventListener('click', preGetFile);
 addPassBtn.addEventListener('click', preAddPass);
@@ -81,32 +81,32 @@ function swaggerRawUI() {
 }
 
 function errorReloadPageMsg(id) {
-    id.innerHTML = "ой-ёй, что-то не то. надо обновить страницу";
+    id.innerHTML = "yay, something's wrong. reload the page";
 }
 
 function errorNoAdminAccessMsg(id) {
-    id.innerHTML = "не трогай, это для админов";
+    id.innerHTML = "no touching, that's admin stuff";
 }
 
 function preGetFile() {
-    loader.innerHTML = "Загрузка...";
+    loader.innerHTML = "Loading...";
     getFile();
 }
 
 function preAddPass() {
-    loader.innerHTML = "Загрузка...";
+    loader.innerHTML = "Loading...";
     addPass();
 }
 
 function preMultiAddPass() {
-    loader.innerHTML = "Загрузка...";
+    loader.innerHTML = "Loading...";
     multiAddPass();
 }
 
 function clipPasses() {
     passes.select();
     document.execCommand("copy");
-    alert("Данные скопированы");
+    alert("Data copied to your Clipboard");
 }
 
 function clipPass() {
@@ -117,7 +117,7 @@ function clipPass() {
   
   document.execCommand("copy");
   document.body.removeChild(TempText);
-  alert("Данные скопированы");
+  alert("Data copied to your Clipboard");
 }
 
 async function getFile() {
@@ -138,13 +138,13 @@ async function getFile() {
     .then(function (response) {
         if (response.status == '400' || response.status == '500') {
             console.log("Error while getting file");
-    	    loader.innerHTML = "ошибка";
+    	    loader.innerHTML = "error";
             return Promise.reject(response);
 	} else if (response.status == '200') {
     	    loader.innerHTML = "";
             return (response.json());
         } else {
-    	    loader.innerHTML = "ошибка";
+    	    loader.innerHTML = "error";
 	    return Promise.reject(response);
         }
     })
@@ -183,14 +183,14 @@ async function addPass() {
     	    loader.innerHTML = "";
             return (response.json());
         } else {
-    	    loader.innerHTML = "ошибка";
+    	    loader.innerHTML = "error";
 	    return Promise.reject(response);
         }
     })
     .then(function (json) {
         multiGenPassBtn.style.display = "none";
         textContent.style.display = "none";
-        loginInputMsg.innerHTML = "Введите новый логин";
+        loginInputMsg.innerHTML = "Input new login";
         loginInputMsg.style.display = "block";
         loginInput.value = json.login;
         loginInput.style.display = "block";
@@ -205,7 +205,7 @@ async function generatePass() {
     var jsonBody = JSON.stringify(requestBody);
 
     loginValidateMsg.style.display = "block";
-    loginValidateMsg.innerHTML = "Загрузка...";
+    loginValidateMsg.innerHTML = "Loading...";
 
     fetch(genPassUrlProd, {
         method: 'POST',
@@ -219,28 +219,28 @@ async function generatePass() {
     .then(function (response) {
         if (response.status == '204') {
             loginValidateMsg.style.display = "block";
-            loginValidateMsg.innerHTML = "пустые логины предлагаем? нехорошо это";
+            loginValidateMsg.innerHTML = "suggesting empty logins? that's a bad thing to do";
             return Promise.reject(response);
         } else if (response.status == '400') {
             loginValidateMsg.style.display = "block";
-            loginValidateMsg.innerHTML = "в логине не должно быть пробелов";
-            return Promise.reject(response); 
+            loginValidateMsg.innerHTML = "login must not consist spaces";
+            return Promise.reject(response);
         } else if (response.status == '409') {
             loginValidateMsg.style.display = "block";
-            loginValidateMsg.innerHTML = "такой логин уже есть. давай другой";
+            loginValidateMsg.innerHTML = "there's a login like that already. try another";
             return Promise.reject(response); 
         } else if (response.status == '200') {
             loginValidateMsg.innerHTML = "";
             return (response.json());
         } else {
             loginValidateMsg.style.display = "block";
-	    loginValidateMsg.innerHTML = "ой-ёй, что-то не то. надо обновить страницу";
+	    loginValidateMsg.innerHTML = "yay, something's wrong. reload the page";
 	    return Promise.reject(response);
         }
     })
     .then(function (json) {
         pass.innerHTML = json.password;
-        modalMsg.innerHTML = "Сохраните этот пароль! Он будет показан только один раз";
+        modalMsg.innerHTML = "Save that password! It will be shown just once";
 	passModal.style.display = "block";
 	pass.style.display = "block";
 	passes.style.display = "none";
@@ -256,7 +256,7 @@ async function multiGeneratePass() {
     var jsonBody = JSON.stringify(requestBody);
         
     loginValidateMsg.style.display = "block";
-    loginValidateMsg.innerHTML = "Загрузка...";
+    loginValidateMsg.innerHTML = "Loading...";
 
     fetch(multiGenPassUrlProd, {
         method: 'POST',
@@ -270,24 +270,24 @@ async function multiGeneratePass() {
     .then(function (response) {
         if (response.status == '400') {
             loginValidateMsg.style.display = "block";
-            loginValidateMsg.innerHTML = "неверный формат количества";
-            return Promise.reject(response); 
+            loginValidateMsg.innerHTML = "wrong quantity format";
+            return Promise.reject(response);
         } else if (response.status == '400') {
             loginValidateMsg.style.display = "block";
-            loginValidateMsg.innerHTML = "за раз можно сгенерировать от 2 до 100 записей";
+            loginValidateMsg.innerHTML = "you can generate from 2 to 100 accounts at once";
             return Promise.reject(response); 
         } else if (response.status == '200') {
             loginValidateMsg.innerHTML = "";
             return (response.json());
         } else {
             loginValidateMsg.style.display = "block";
-	    loginValidateMsg.innerHTML = "ой-ёй, что-то не то. надо обновить страницу";
+	    loginValidateMsg.innerHTML = "yay, something's wrong. reload the page";
 	    return Promise.reject(response);
         }
     })
     .then(function (json) {
         passes.innerHTML = json.response;
-        modalMsg.innerHTML = "Сохраните этот список! Он будет показан только один раз";
+        modalMsg.innerHTML = "Save that list! It will shown just once";
         passModal.style.display = "block";
 	passes.style.display = "block";
 	pass.style.display = "none";
@@ -320,13 +320,13 @@ async function multiAddPass() {
     	    loader.innerHTML = "";
             return (response.json());
         } else {
-    	    loader.innerHTML = "ошибка";
+    	    loader.innerHTML = "error";
 	    return Promise.reject(response);
         }
     })
     .then(function (json) {
         textContent.style.display = "none";
-        loginInputMsg.innerHTML = "Введите количество новых записей";
+        loginInputMsg.innerHTML = "Enter the number of new accounts";
         loginInputMsg.style.display = "block";
         loginInput.value = "2";
         loginInput.style.display = "block";

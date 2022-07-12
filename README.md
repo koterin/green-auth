@@ -37,7 +37,9 @@ TBD
 
 10. Change the global vars in `/server/service/service.go` for you website URL (see comments - line 22, 23, 74)
 
-11. Start the script
+11. Change the site links to your URL in `/server/static/index.js`, `/server/static/auth.js` and `/server/static/home.js` (follow the comments)
+
+12. Start the script
 ```
 ./green-auth.yaml
 ```
