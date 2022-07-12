@@ -8,27 +8,27 @@ import (
         "ktrn.com/dbhandler"
 )
 
-func CheckEmail(email string) (int, string) {
-    res, err := dbhandler.FindUser(email)
+func CheckLogin(login string) (int, string) {
+    res, err := dbhandler.FindUser(login)
     if err != nil {
-       log.Println("08: Error while executing .FindUser()")
+       log.Println("06: Error while executing .FindUser()")
 
         return 500, INTERNAL_ERROR_MSG
     }
 
     if res == 0 {
-        log.Println("04: Email not found in allowed: ", email)
+        log.Println("07: Login not found in allowed: ", login)
 
-        return 400, "Email not found in allowed"
+        return 400, "Login not found in allowed"
     } else {
-        return 200, "Email accepted"
+        return 200, "Login accepted"
     }
 }
 
-func PostCheckEmail(w http.ResponseWriter, req *http.Request) {
+func PostCheckLogin(w http.ResponseWriter, req *http.Request) {
     var respdata ResponseData
 
-    log.Println("POST /api/checkEmail")
+    log.Println("POST /api/checkLogin")
     AddBasicHeaders(w);
 
     if (req.Method== OPTIONS) {
@@ -39,15 +39,13 @@ func PostCheckEmail(w http.ResponseWriter, req *http.Request) {
 
     err := ReadJson(w, req, &respdata)
     if err != nil {
-        log.Print("05: Error unmarshalling JSON")
+        log.Print("08: Error unmarshalling JSON")
 
         return
     }
 
-    status, msg := CheckEmail(respdata.Email)
+    status, msg := CheckLogin(respdata.Login)
 
-    w.Header().Set("Origin", "http://127.0.0.1:8080")
-    w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(status)
 
     answer := Answer {

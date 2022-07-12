@@ -14,7 +14,7 @@ import (
 func generateCookie(email string) (*http.Cookie, int, string) {
     userId, err := dbhandler.GetUserId(email)
     if err != nil {
-        log.Println("10: Error while executing .GetUserId()")
+        log.Println("29: Error while executing .GetUserId()")
 
         return nil, 500, INTERNAL_ERROR_MSG
     }
@@ -23,7 +23,7 @@ func generateCookie(email string) (*http.Cookie, int, string) {
     err = dbhandler.InsertSession(userId, sessionId.String())
 
     if err != nil {
-        log.Println("23: Error while executing .InsertSession()")
+        log.Println("30: Error while executing .InsertSession()")
 
         return nil, 500, INTERNAL_ERROR_MSG
     }
@@ -34,7 +34,7 @@ func generateCookie(email string) (*http.Cookie, int, string) {
         Expires: (time.Now().Add(time.Duration(168) * time.Hour)),
         Path: "/",
         HttpOnly: true,
-	Secure: true,
+        Secure: true,
     }
 
     return cookie, 200, "Code is valid"
@@ -44,7 +44,7 @@ func ValidateCode(email string, code string) (int, string) {
     userId, err := dbhandler.GetUserId(email)
 
     if err != nil {
-        log.Println("10: Error while executing .GetUserId()")
+        log.Println("31: Error while executing .GetUserId()")
 
         return 500, INTERNAL_ERROR_MSG
     }
@@ -52,7 +52,7 @@ func ValidateCode(email string, code string) (int, string) {
     trueCode, codeId, attempts, err := dbhandler.FindCode(userId)
 
     if err != nil {
-        log.Println("20: Error while executing .FindCode")
+        log.Println("32: Error while executing .FindCode")
 
         return 500, INTERNAL_ERROR_MSG
     }
@@ -64,7 +64,7 @@ func ValidateCode(email string, code string) (int, string) {
     err = dbhandler.IncreaseAttempts(codeId)
 
     if err != nil {
-        log.Println("21: Error while executing .IncreaseAttempts")
+        log.Println("33: Error while executing .IncreaseAttempts")
 
         return 500, INTERNAL_ERROR_MSG
     }
@@ -91,14 +91,12 @@ func PostValidateCode(w http.ResponseWriter, req *http.Request) {
     err := ReadJson(w, req, &respdata)
 
     if err != nil {
-        log.Print("07: Error unmarshalling JSON")
+        log.Print("34: Error unmarshalling JSON")
 
         return
     }
 
     checkStatus, checkMsg := CheckEmail(respdata.Email)
-
-    w.Header().Set("Content-Type", "application/json")
 
     if checkStatus == 200 {
         codeStatus, codeMsg := ValidateCode(respdata.Email, respdata.Code)
@@ -121,9 +119,9 @@ func PostValidateCode(w http.ResponseWriter, req *http.Request) {
             w.WriteHeader(codeStatus)
 
             answer := Answer {
-                            Status: codeStatus,
-                            Response: codeMsg,
-                         }
+                                Status: codeStatus,
+                                Response: codeMsg,
+                             }
             json.NewEncoder(w).Encode(answer)
         }
     } else {

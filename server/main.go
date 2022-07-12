@@ -68,7 +68,7 @@ func main() {
     log.Println("Successfully connected to DB")
 
     http.Handle("/", service.AuthFileServerHandler("./static/"))
-    http.HandleFunc("/api/checkEmail", service.PostCheckEmail)
+    http.HandleFunc("/api/checkLogin", service.PostCheckLogin)
     http.HandleFunc("/api/sendCode", service.PostSendCode)
     http.HandleFunc("/api/validateCode", service.PostValidateCode)
     http.HandleFunc("/api/getFile", service.GetGetFile)

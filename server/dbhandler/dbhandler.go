@@ -80,14 +80,14 @@ func CheckSendCodeAttempts(user_id string) (int, error) {
     rows, err := DB.Query(`SELECT id FROM codes WHERE user_id = $1 AND
                            created_at > (NOW() - INTERVAL '5 minutes');`, user_id)
     if err != nil {
-        log.Println("1: Error: CheckSendCodeAttempts Query")
+        log.Println("01: Error: CheckSendCodeAttempts Query")
     }
     defer rows.Close()
 
     for rows.Next() {
         err = rows.Scan(&id)
         if err != nil {
-            log.Println("2: Error: CheckSendCodeAttempts row iterations")
+            log.Println("02: Error: CheckSendCodeAttempts row iterations")
             return attempts, err
         }
         attempts++
@@ -95,7 +95,7 @@ func CheckSendCodeAttempts(user_id string) (int, error) {
 
     err = rows.Err()
     if err != nil {
-        log.Println("3: Error: CheckSendCodeAttempts row end")
+        log.Println("03: Error: CheckSendCodeAttempts row end")
         return attempts, err
     }
 

@@ -29,7 +29,7 @@ func CheckUniqueLogin(login string) (int, string) {
 
     file, err := os.Open(Filename)
     if err != nil {
-       log.Println("27: Error while opening passwords file")
+       log.Println("09: Error while opening passwords file")
        return 500, INTERNAL_ERROR_MSG
     }
     defer file.Close()
@@ -45,7 +45,7 @@ func CheckUniqueLogin(login string) (int, string) {
     }
 
     if err := scanner.Err(); err != nil {
-       log.Println("28: Error while parsing passwords file")
+       log.Println("10: Error while parsing passwords file")
        return 500, INTERNAL_ERROR_MSG
     }
 
@@ -55,7 +55,7 @@ func CheckUniqueLogin(login string) (int, string) {
 func WritePassToFile(record string) (int, string) {
     file, err := os.OpenFile(Filename, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
     if err != nil {
-       log.Println("27: Error while opening passwords file")
+       log.Println("11: Error while opening passwords file")
 
 	    return 500, INTERNAL_ERROR_MSG
     }
@@ -64,7 +64,7 @@ func WritePassToFile(record string) (int, string) {
     _, err = file.WriteString(record)
 
     if err != nil {
-       log.Println("29: Error while writing into passwords file")
+       log.Println("12: Error while writing into passwords file")
        log.Println(err)
        file.Close()
 
@@ -79,7 +79,7 @@ func WritePassToFile(record string) (int, string) {
 func GitComplete() (int, string) {
     res := GitAdd()
     if res != 0 {
-        log.Println("30: Error while pushing changes")
+        log.Println("13: Error while pushing changes")
         // TODO: GitRestore();
 
         return 500, INTERNAL_ERROR_MSG
@@ -127,35 +127,36 @@ func PostGeneratePass(w http.ResponseWriter, req *http.Request) {
 
     err := ReadJson(w, req, &respdata)
     if err != nil {
-       log.Print("07: Error unmarshalling JSON")
+       log.Print("14: Error unmarshalling JSON")
 
        return
     }
 
     checkStatus, checkMsg := CheckUniqueLogin(respdata.Login)
     if checkStatus != 200 {
-       w.WriteHeader(checkStatus)
+        w.WriteHeader(checkStatus)
 
         answer := Answer {
-                       Status: checkStatus,
-                       Response: checkMsg,
-                    }
-       json.NewEncoder(w).Encode(answer)
+                            Status: checkStatus,
+                            Response: checkMsg,
+                         }
+        json.NewEncoder(w).Encode(answer)
 
         return
     }
 
     pass := GeneratePass(PASSWORD_LENGTH)
     record := CreateNewRecord(respdata.Login, pass)
+
     wStatus, wMsg := WritePassToFile(record + "\n")
     if wStatus != 200 {
-       w.WriteHeader(wStatus)
+        w.WriteHeader(wStatus)
 
         answer := Answer {
-                       Status: wStatus,
-                       Response: wMsg,
-                    }
-       json.NewEncoder(w).Encode(answer)
+                            Status: wStatus,
+                            Response: wMsg,
+                         }
+        json.NewEncoder(w).Encode(answer)
 
         return
     }
@@ -165,9 +166,9 @@ func PostGeneratePass(w http.ResponseWriter, req *http.Request) {
     w.WriteHeader(status)
 
     answer := Answer {
-                    Status: status,
-                    Response: msg,
-                    Password: pass,
-                }
+                        Status: status,
+                        Response: msg,
+                        Password: pass,
+                     }
     json.NewEncoder(w).Encode(answer)
 }

@@ -12,6 +12,7 @@ import (
 )
 
 var PassClient = &http.Client{Timeout: 10 * time.Second}
+
 var table = [...]byte{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
 
 func generate_code(length int) string {
@@ -36,7 +37,7 @@ func sendTelegramMsg(chat_id string, code string) {
     resp, err := PassClient.Get(requestURL)
 
     if err != nil {
-        log.Println("17: Error while sending request to Telegram")
+        log.Println("21: Error while sending request to Telegram")
 
         return
     }
@@ -44,7 +45,7 @@ func sendTelegramMsg(chat_id string, code string) {
     body, err := io.ReadAll(resp.Body)
 
     if err != nil {
-        log.Println("18: Error while reading TG response body")
+        log.Println("22: Error while reading TG response body")
         return
     }
 
@@ -52,15 +53,15 @@ func sendTelegramMsg(chat_id string, code string) {
     sb = sb[6:10]
 
     if sb != "true" {
-		log.Println("19: Error while sending code via Telegram")
+		log.Println("23: Error while sending code via Telegram")
 	}
 }
 
-func SendCode(Email string) (int, string) {
-    user_id, err := dbhandler.GetUserId(Email)
+func SendCode(Login string) (int, string) {
+    user_id, err := dbhandler.GetUserId(Login)
 
     if err != nil {
-        log.Println("10: Error while executing .GetUserId()")
+        log.Println("24: Error while executing .GetUserId()")
 
         return 500, INTERNAL_ERROR_MSG
     }
@@ -72,7 +73,7 @@ func SendCode(Email string) (int, string) {
     }
 
     if attempts > 5 {
-        log.Println("16: User made more than 5 SendCode attempts in 5 minutes: ", Email)
+        log.Println("25: User made more than 5 SendCode attempts in 5 minutes: ", Email)
 
         return 429, "Attempts limit in period exceeded"
     }
@@ -82,7 +83,7 @@ func SendCode(Email string) (int, string) {
     err = dbhandler.AddCode(code, user_id);
 
     if err != nil {
-        log.Println("12: Error while executing .AddCode() for user ", user_id)
+        log.Println("26: Error while executing .AddCode() for user ", user_id)
 
         return 500, INTERNAL_ERROR_MSG
     }
@@ -90,7 +91,7 @@ func SendCode(Email string) (int, string) {
     chat_id, err := dbhandler.GetChatId(user_id)
 
     if err != nil {
-        log.Println("18: Error while executing .GetChatId()")
+        log.Println("27: Error while executing .GetChatId()")
 
         return 500, INTERNAL_ERROR_MSG
     }
@@ -114,7 +115,7 @@ func PostSendCode(w http.ResponseWriter, req *http.Request) {
     err := ReadJson(w, req, &respdata)
 
     if err != nil {
-        log.Print("07: Error unmarshalling JSON")
+        log.Print("28: Error unmarshalling JSON")
 
         return
     }
@@ -122,7 +123,6 @@ func PostSendCode(w http.ResponseWriter, req *http.Request) {
     checkStatus, checkMsg := CheckEmail(respdata.Email)
 
     AddBasicHeaders(w)
-    w.Header().Set("Content-Type", "application/json")
 
     if checkStatus == 200 {
         status, msg := SendCode(respdata.Email)

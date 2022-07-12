@@ -6,8 +6,8 @@ import (
         "encoding/json"
         "strings"
         "os"
-	"bufio"
-	"strconv"
+        "bufio"
+        "strconv"
 )
 
 func suggestPassword() (int, string) {
@@ -35,7 +35,7 @@ func FindMaxLoginIndex() (int, error) {
 
     file, err := os.Open(Filename)
     if err != nil {
-        log.Println("27: Error while opening passwords file")
+        log.Println("04: Error while opening passwords file")
         return 0, err
     }
     defer file.Close()
@@ -43,9 +43,9 @@ func FindMaxLoginIndex() (int, error) {
     scanner := bufio.NewScanner(file)
     for scanner.Scan() {
         record = scanner.Text()
-        if record[0:2] == "bz" {
+        if record[0:5] == "green" {
             split = strings.Split(record,":")
-            s := strings.Split(split[0], "bz")
+            s := strings.Split(split[0], "green")
             num, _ := strconv.Atoi(s[1])
 
             if num > max {
@@ -55,7 +55,7 @@ func FindMaxLoginIndex() (int, error) {
     }
 
     if err := scanner.Err(); err != nil {
-        log.Println("28: Error while parsing passwords file")
+        log.Println("05: Error while parsing passwords file")
         return 0, err
     }
 
@@ -93,8 +93,8 @@ func GetAddPass(w http.ResponseWriter, r *http.Request) {
         w.WriteHeader(gitStatus)
 
         answer := Answer {
-                              Status: gitStatus,
-                              Response: gitMsg,
+                            Status: gitStatus,
+                            Response: gitMsg,
                          }
         json.NewEncoder(w).Encode(answer)
 
@@ -106,8 +106,8 @@ func GetAddPass(w http.ResponseWriter, r *http.Request) {
     w.WriteHeader(status)
 
     answer := Answer {
-                            Status: status,
-                            Login: login,
+                        Status: status,
+                        Login: login,
                      }
     json.NewEncoder(w).Encode(answer)
 }

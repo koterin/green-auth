@@ -4,16 +4,16 @@ import (
         "net/http"
         "log"
         "encoding/json"
-	"os/exec"
-	"io/ioutil"
+        "os/exec"
+        "io/ioutil"
 )
 
 func GitAdd() int {
-    cmd := exec.Command("git", "-C", "./servicepswd", "add", ".")
+    cmd := exec.Command("git", "-C", "./green-auth", "add", ".")
     err := cmd.Run()
 
     if err != nil {
-        log.Println("32: Error while adding changes to passwords file")
+        log.Println("15: Error while adding changes to passwords file")
 
         return 1
     }
@@ -22,11 +22,11 @@ func GitAdd() int {
 }
 
 func GitCommit() int {
-    cmd := exec.Command("git", "-C", "./servicepswd", "commit", "-m", "\"new pass added\"")
+    cmd := exec.Command("git", "-C", "./green-auth", "commit", "-m", "\"new pass added\"")
     err := cmd.Run()
 
     if err != nil {
-        log.Println("33: Error while committing file")
+        log.Println("16: Error while committing file")
 
         return 1
     }
@@ -35,11 +35,11 @@ func GitCommit() int {
 }
 
 func GitPush() int {
-    cmd := exec.Command("git", "-C", "./servicepswd", "push")
+    cmd := exec.Command("git", "-C", "./green-auth", "push")
     err := cmd.Run()
 
     if err != nil {
-        log.Println("34: Error while pushing changes")
+        log.Println("17: Error while pushing changes")
 
         return 1
     }
@@ -48,11 +48,11 @@ func GitPush() int {
 }
 
 func GitPullRepo() (int, string) {
-    cmd := exec.Command("git", "-C", "./servicepswd", "pull")
+    cmd := exec.Command("git", "-C", "./green-auth", "pull")
     err := cmd.Run()
 
     if err != nil {
-        log.Println("28: Error while pulling passwords file")
+        log.Println("18: Error while pulling passwords file")
 
         return 500, INTERNAL_ERROR_MSG
     }
@@ -60,7 +60,7 @@ func GitPullRepo() (int, string) {
     b, err := ioutil.ReadFile(Filename)
 
     if err != nil {
-        log.Println("27: Error while opening passwords file")
+        log.Println("19: Error while opening passwords file")
 
         return 500, INTERNAL_ERROR_MSG
     }
@@ -84,8 +84,8 @@ func GetGetFile(w http.ResponseWriter, req *http.Request) {
     w.WriteHeader(status)
 
     answer := Answer {
-                            Status: status,
-                            Response: msg,
-                         }
+                        Status: status,
+                        Response: msg,
+                     }
     json.NewEncoder(w).Encode(answer)
 }

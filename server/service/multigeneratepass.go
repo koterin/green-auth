@@ -25,11 +25,11 @@ func multiGeneratePass(q string) (int, string) {
     for i := 0; i < qint; i++ {
         login = ConstructNewLogin(index)
         pass = GeneratePass(PASSWORD_LENGTH)
-	body += login + ": " + pass + "\n"
+        body += login + ": " + pass + "\n"
 
-	record = CreateNewRecord(login, pass)
+	    record = CreateNewRecord(login, pass)
         recordBody += record + "\n"
-	index += 1
+	    index += 1
     }
 
     wStatus, _ := WritePassToFile(recordBody)
@@ -69,7 +69,7 @@ func PostMultiGeneratePass(w http.ResponseWriter, req *http.Request) {
 
     err := ReadJson(w, req, &respdata)
     if err != nil {
-       log.Print("07: Error unmarshalling JSON")
+       log.Print("20: Error unmarshalling JSON")
 
        return
     }
@@ -92,8 +92,8 @@ func PostMultiGeneratePass(w http.ResponseWriter, req *http.Request) {
     w.WriteHeader(status)
 
     answer := Answer {
-                    Status: status,
-                    Response: body,
-                }
+                        Status: status,
+                        Response: body,
+                     }
     json.NewEncoder(w).Encode(answer)
 }

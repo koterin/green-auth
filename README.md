@@ -35,7 +35,9 @@ TBD
 
 9. Create your TG-bot and add its key to the `/docker-compose.yaml` file (follow the comments)
 
-10. Start the script
+10. Change the global vars in `/server/service/service.go` for you website URL (see comments - line 22, 23, 74)
+
+11. Start the script
 ```
 ./green-auth.yaml
 ```

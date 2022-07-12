@@ -6,7 +6,7 @@ import (
         "io/ioutil"
         "os"
         "path/filepath"
-	"strings"
+        "strings"
 
         "ktrn.com/dbhandler"
 )
@@ -14,21 +14,21 @@ import (
 var TELEGRAM_URL = os.Getenv("TG_API_URL")
 var TELEGRAM_BOT_KEY = os.Getenv("TG_BOT_KEY")
 var CODE_LENGTH = 7
+var PASSWORD_LENGTH = 8
+
 var UnathorizedPages [9]string = [9]string{"/main.css", "/index.js", "/index.html",
                                   "/", "/authenticate.html", "/auth.js", "/theme.js",
                                   "/images/tg_qr.png", "/favicon.ico"}
-var Loginpage = "https://password.berizaryad.ru/"
-var Homepage = "https://password.berizaryad.ru/home.html"
-var PASSWORD_LENGTH = 8
-var Filename = "servicepswd/.service"
+var Loginpage = "https://green-auth.ktrn.com/"  // Change this line to your site URL
+var Homepage = "https://green-auth.ktrn.com/home.html"  // Change this line to your site URL
+var Filename = "green-auth/.service"
 var INTERNAL_ERROR_MSG = "Internal Error"
 var OPTIONS = "OPTIONS"
 
 type ResponseData struct {
-    Email    string  `json:"email"`
+    Login    string  `json:"login"`
     Code     string  `json:"code"`
     File     string  `json:"file"`
-    Login    string  `json:"login"`
     Quantity string  `json:"quantity"`
 }
 
@@ -71,7 +71,7 @@ func ReadJson(w http.ResponseWriter, req *http.Request, respdata *ResponseData) 
 }
 
 func AddBasicHeaders(w http.ResponseWriter) {
-    w.Header().Set("Access-Control-Allow-Origin", "http://test.password.ru")
+    w.Header().Set("Access-Control-Allow-Origin", "https://green-auth.ktrn.com")  // Change this line to your site URL
     w.Header().Set("Access-Control-Allow-Credentials", "true")
     w.Header().Set("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT")
     w.Header().Set("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers")
@@ -100,11 +100,10 @@ func (afs AuthFileServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
     if req.URL.Path == "/" {
         sessionCookie, err := req.Cookie("sessionId")
         if err == nil {
-	    dbErr := dbhandler.CheckSession(sessionCookie.Value)
+            dbErr := dbhandler.CheckSession(sessionCookie.Value)
             if (dbErr == nil) {
                 http.Redirect(w, req, Homepage, http.StatusSeeOther)
-
-		return
+                return
             }
         }
     }
@@ -123,26 +122,23 @@ func (afs AuthFileServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
     sessionCookie, err := req.Cookie("sessionId")
     if err != nil {
         http.Redirect(w, req, Loginpage, http.StatusSeeOther)
-
-	return
+        return
     }
 
     err = dbhandler.CheckSession(sessionCookie.Value)
     if err != nil {
         http.Redirect(w, req, Loginpage, http.StatusSeeOther)
-
-	return
+        return
     }
 
     // If user is asking for swagger, he must have dev or admin role
     if (strings.Contains(req.URL.Path, "/swagger")) {
         sessionCookie, err := req.Cookie("sessionId")
         if err == nil {
-	    dbErr := dbhandler.CheckDevSession(sessionCookie.Value)
-	    if (dbErr != 1) {
+            dbErr := dbhandler.CheckDevSession(sessionCookie.Value)
+            if (dbErr != 1) {
                 http.Redirect(w, req, Homepage, http.StatusSeeOther)
-
-		return
+                return
             }
         }
     }
