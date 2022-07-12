@@ -40,7 +40,7 @@ func StartTelegramBot(ctx context.Context) {
         var userChat Recipient
         userChat.ID = int(m.Chat.ID)
 
-	message := "Сообщите ваш ID админу для авторизации: " + userChat.Recipient()
+	message := "Send your ID to the admin for registration: " + userChat.Recipient()
         bot.Send(userChat, message)
 	})
 

@@ -20,6 +20,3 @@ attempts INT,
 user_id UUID REFERENCES users(id),
 created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP);
-
-INSERT INTO users (id, email, chat_id, role, created_at, updated_at)
-VALUES (DEFAULT, 'e.green@berizaryad.ru', '392476956', 'admin', DEFAULT, DEFAULT);

@@ -1,5 +1,5 @@
 FROM golang:1.18
-COPY ./ /password-manager/telegram
-WORKDIR /password-manager/telegram
+COPY ./ /green-auth/telegram
+WORKDIR /green-auth/telegram
 RUN go build .
 ENTRYPOINT ["./main"]

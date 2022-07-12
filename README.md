@@ -70,7 +70,7 @@ Service has 3 roles described:
 
 ## If you need to change something
 
-1. If you need to set unique credentials for the user who will be the author of the commits made by the `green-auth`, you'll jave to adjust those lines in the `/server/Dockerfile`:
+1. If you need to set unique credentials for the user who will be the author of the commits made by the `green-auth`, you'll have to adjust those lines in the `/server/Dockerfile`:
 
 ```
 RUN git config --global user.email "green.auth@sample.com"
@@ -86,7 +86,7 @@ RUN git config --global user.name "green-auth"
     ```
     INSERT INTO users VALUES (DEFAULT, '[USERNAME]@[SAMPLE].com', '[CHAT_ID]', '[ROLE]', DEFAULT, DEFAULT);
     ```
-    where `[USERNAME]` - the user login, `[CHAT_ID]` - received Telegram chat_id of user and the bot, `[ROLE]` - user's assigned role (`admin`, `dev` or `service`).
+    where `[USERNAME]` - user login, `[CHAT_ID]` - received Telegram chat_id of the user and the bot, `[ROLE]` - user's assigned role (`admin`, `dev` or `service`).
 
     > ATTENTION! Please, assign the `admin` role carefully. A user with admin rights may take some unrecoverable actions.
 
@@ -99,19 +99,20 @@ where the meaning of the fields is the same as explained in the 2.2 step.
 
 ## How the authorization works
 
-#### Log In
+### Log In
 
 When user is registered (see step 2 above) he may authorize via `green-auth`.
+
 First he must provide his login; you may add exclusive pattern for matching those logins (for example, only emails for some particular domain) in the `/server/static/index.html` file. Current pattern set to 2-20 symbols.
 Once the field is validated, the Proceed Button activates.
 
-#### Validate login
+### Validate login
 
 Proceed button sends request to the backend; it checks if that login actually exists in the database. In the negative case the message `incorrect login` appears and Proceed Button is deactivated again (until some letters are changed in the input field). If the login is correct, user is being redirected to the OTP-page.
 
-#### One Time Password
+### One Time Password
 
-One Time Password (OTP) is being generated as a 7-digit sequence. Backend sends it via Telegram API to the Telegram Chat between that user and the Bot.
+One Time Password (OTP) is being generated as a 7-digit sequence. Backend sends it via Telegram API to the Telegram Chat between the user and the Bot.
 
 As it's sent with the code style formatting, user may just click on the code (on the PC) to copy it to the clipboard.
 
@@ -124,18 +125,20 @@ So the rules for the OTP are:
 
 If the code is right, user will be redirected to the Homepage.
 
-#### Generate passwords
+### Generate passwords
 
 Those are the extras mentioned before: it may serve as a login-pass generator.
 
 > You may delete this functionality without affecting the authorization part, but you will have to do it on your own. Instead to use just the auth part you may leave the backend methods the way they are but add your own Frontend or necessary resources redirects.
 
-So the passwords here are stored in the GitHub Repo in the `.service` file in the form of `login:MD5-hashed pass`. The task of gen-pass button on the site is to add new ones and successfuly push them back to the remote Repo.
+So the passwords here are stored in the GitHub Repo in the `.service` file in the form of `login:MD5-hashed pass`. The job of the gen-pass button on the site is to add new ones and successfuly push them back to the remote Repo.
 
 1. Show passwords
+
 Makes `git pull` from the backend container and outputs the contents of the password-file
 
 2. Generate password
+
 Logins in those accounts may be unique or sequential: `green1`, `green2`, etc. When the `Generate password`-button is pressed, backend checks out the last sequential login and suggests its incremented value to the user.
 For example, if the last `green` login is `green34`, it will suggest `green35`.
 
@@ -144,9 +147,10 @@ User may change that login, but:
    - Login must not consist spaces
    - Login must not be duplicated
 
-Once the login is accepted, backend generates random 8-symbol password, hashes it with MD5, contatenates strings to form an account string, adds it to the file and pushes to GitHub. Once it's done, user sees the generated password in the modal window on the site; button in the middle with the symbol of two pages copies the password to the clipboard. That's it!
+Once the login is accepted, backend generates random 8-symbol password, hashes it with MD5, concatenates strings to form an account string, adds it to the file and pushes to GitHub. Once it's done, user sees the generated password in the modal window on the site; button in the middle with the symbol of two pages copies the password to the clipboard. That's it!
 
 3. Generate passwords
+
 This button lets you generate multiple accounts at a time (from 2 to 100).
 Instead of asking for a login input it waits for the number of accounts to be created, default being 2.
 
@@ -161,9 +165,14 @@ Swagger's default use mode - static pages - don't provide any authorization feat
 Put your swagger-definition file in the `/server/static/swagger/swagger.yaml` and build the server.
 
 > Keep in mind that all frontend pages and Swagger included lie in the server Docker container, so you'll have to rebuild the container with every change or edit those files directly in the container.
-> Little tip: to edit files in the running server Docker container. enter it like that:
-`docker exec -it green-server sh`
-(`sh` - because server uses the bullseye Linux image which does not have bash)
+
+> Little tip: to edit files in the running server Docker container print this:
+```
+docker exec -it green-server sh
+```
+(`sh` - because server uses the bullseye Linux image which does not have `bash`)
 Next download some text editor, like this:
-`apt-get install vim`
+```
+apt-get install vim
+```
 and happily edit your files inside. Remember, if you rebuild the container you'll have to install vim again.
