@@ -2,8 +2,6 @@
 
 Simple authorization service serving as a firewall for all your online content
 
-> Extra: there are some features described in another section (TBD)
-
 ## Build
 
 > For building you'll need `ansible` and `ansible-playbook` installed on your machine
@@ -172,11 +170,5 @@ Put your swagger-definition file in the `/server/static/swagger/swagger.yaml` an
 
 > Little tip: to edit files in the running server Docker container print this:
 ```
-docker exec -it green-server sh
+docker exec -it green-server bash
 ```
->(`sh` - because server uses the bullseye Linux image which does not have `bash`)
-Next download some text editor, like this:
-```
-apt-get install vim
-```
->and happily edit your files inside. Remember, if you rebuild the container you'll have to install vim again.
