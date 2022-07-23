@@ -2,8 +2,8 @@ package main
 
 import (
     "context"
-	"os"
-	"os/signal"
+    "os"
+    "os/signal"
 
     "github.com/alexflint/go-arg"
     "telegram/utils"

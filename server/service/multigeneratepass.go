@@ -25,11 +25,11 @@ func multiGeneratePass(q string) (int, string) {
     for i := 0; i < qint; i++ {
         login = ConstructNewLogin(index)
         pass = GeneratePass(PASSWORD_LENGTH)
-	body += login + ": " + pass + "\n"
+        body += login + ": " + pass + "\n"
 
-	record = CreateNewRecord(login, pass)
+        record = CreateNewRecord(login, pass)
         recordBody += record + "\n"
-	index += 1
+        index += 1
     }
 
     wStatus, _ := WritePassToFile(recordBody)

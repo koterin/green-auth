@@ -8,23 +8,23 @@ import (
         "io"
         "time"
 
-        "ktrn.com/dbhandler"
+        "green-auth/dbhandler"
 )
 
 var PassClient = &http.Client{Timeout: 10 * time.Second}
 var table = [...]byte{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
 
 func generate_code(length int) string {
-	b := make([]byte, length)
-	_, err := io.ReadAtLeast(rand.Reader, b, length)
+    b := make([]byte, length)
+    _, err := io.ReadAtLeast(rand.Reader, b, length)
 
     if err != nil {
-		panic(err)
-	}
+        panic(err)
+    }
 
     for i := 0; i < length; i++ {
-		b[i] = table[int(b[i]) % len(table)]
-	}
+        b[i] = table[int(b[i]) % len(table)]
+    }
 
     return string(b)
 }
@@ -52,8 +52,8 @@ func sendTelegramMsg(chat_id string, code string) {
     sb = sb[6:10]
 
     if sb != "true" {
-		log.Println("19: Error while sending code via Telegram")
-	}
+        log.Println("19: Error while sending code via Telegram")
+    }
 }
 
 func SendCode(Email string) (int, string) {

@@ -13,7 +13,7 @@ func GetAuth(w http.ResponseWriter, req *http.Request) {
 
     if !CheckApiKey(req) {
         status = 400
-	return
+        return
     }
 
     access := GetCookie(req)

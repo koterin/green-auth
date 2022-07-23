@@ -5,7 +5,7 @@ import (
         "log"
         "encoding/json"
 
-        "ktrn.com/dbhandler"
+        "green-auth/dbhandler"
 )
 
 func CheckEmail(email string) (int, string) {

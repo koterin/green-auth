@@ -110,7 +110,7 @@ async function sendCode() {
             sendBtn.disabled = true;
             return;
         } else {
-	    return Promise.reject(response);
+            return Promise.reject(response);
         }
     });
 }
@@ -149,16 +149,16 @@ async function validateCode() {
             var token = response.headers.get('X-Green-Token');
             if (token != null) {
                 sessionStorage.removeItem('redirect');
-	        let link = new URL(redirect);
-		link.searchParams.set('greenToken', token);
-		window.location.replace(link);
-		return;
-	    } else {
+                let link = new URL(redirect);
+                link.searchParams.set('greenToken', token);
+                window.location.replace(link);
+                return;
+            } else {
                 location.href = "home.html";
                 return;
-	    }
+            }
         } else {
-	        return Promise.reject(response);
+            return Promise.reject(response);
         }
     });
 }

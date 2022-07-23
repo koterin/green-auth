@@ -55,9 +55,9 @@ func CheckUniqueLogin(login string) (int, string) {
 func WritePassToFile(record string) (int, string) {
     file, err := os.OpenFile(Filename, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
     if err != nil {
-       log.Println("27: Error while opening passwords file")
+        log.Println("27: Error while opening passwords file")
 
-	    return 500, INTERNAL_ERROR_MSG
+        return 500, INTERNAL_ERROR_MSG
     }
     defer file.Close()
 

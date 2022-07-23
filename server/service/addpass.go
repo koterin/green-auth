@@ -6,8 +6,8 @@ import (
         "encoding/json"
         "strings"
         "os"
-	"bufio"
-	"strconv"
+        "bufio"
+        "strconv"
 )
 
 func suggestPassword() (int, string) {

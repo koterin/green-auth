@@ -8,9 +8,9 @@ import (
         "os"
         "path/filepath"
         "net/http/httputil"
-	"log"
+        "log"
 
-        "ktrn.com/dbhandler"
+        "green-auth/dbhandler"
 )
 
 var TELEGRAM_URL = os.Getenv("TG_API_URL")
@@ -121,8 +121,8 @@ func GetCookie(req *http.Request) bool {
 
     origin := req.Header.Get("X-Green-Origin");
     if ((origin == "null") || (origin == "")) {
-	aUrl, _ := url.Parse(HOST_URL)
-	origin = aUrl.Host
+        aUrl, _ := url.Parse(HOST_URL)
+        origin = aUrl.Host
     }
 
     if !dbhandler.CheckSession(sessionCookie.Value, origin) {
@@ -149,7 +149,7 @@ func checkUrl(redirect string) uint {
 func checkRedirect(w http.ResponseWriter, req *http.Request) uint {
     redirect := req.URL.Query().Get("redirect")
     if redirect != "" {
-	return checkUrl(redirect)
+        return checkUrl(redirect)
     }
 
     return 0

@@ -9,8 +9,8 @@ import (
     "os"
     "strconv"
 
-    "ktrn.com/service"
-    "ktrn.com/dbhandler"
+    "green-auth/service"
+    "green-auth/dbhandler"
 
     _ "github.com/lib/pq"
 )

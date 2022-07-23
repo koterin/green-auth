@@ -5,11 +5,11 @@ import (
         "log"
         "encoding/json"
         "time"
-	"net/url"
+        "net/url"
 
         "github.com/google/uuid"
 
-        "ktrn.com/dbhandler"
+        "green-auth/dbhandler"
 )
 
 func generateCookie(email string, host string) (*http.Cookie, int, string) {
@@ -98,10 +98,10 @@ func PostValidateCode(w http.ResponseWriter, req *http.Request) {
     redirect := req.Header.Get("X-Redirect-To")
     if redirect != "null" {
         redirectUrl, err := url.Parse(redirect)
-	if err != nil {
-	    redirect = "null"
-	} else {
-	    host = redirectUrl.Host
+    if err != nil {
+        redirect = "null"
+    } else {
+        host = redirectUrl.Host
         }
     }
 
@@ -113,12 +113,12 @@ func PostValidateCode(w http.ResponseWriter, req *http.Request) {
 
             if status == 200 {
                 if redirect != "null" {
-                   w.Header().Set("X-Green-Token", cookie.Value)
-		   w.WriteHeader(200)
+                    w.Header().Set("X-Green-Token", cookie.Value)
+                    w.WriteHeader(200)
 
-		   return
-		} else {
-	            http.SetCookie(w, cookie)
+                return
+            } else {
+                http.SetCookie(w, cookie)
                 }
             }
 

@@ -122,13 +122,13 @@ func CheckSession(sessionId string, host string) bool {
     switch err := row.Scan(&origin); err {
         case nil:
            if origin != host {
-               log.Println("dbhandler.CheckSession: origin != host")
-	       log.Println("origin in DB: ", origin)
-	       log.Println("host: ", host)
-	       return false
-	   } else {
-	        return true
-	   }
+                log.Println("dbhandler.CheckSession: origin != host")
+                log.Println("origin in DB: ", origin)
+                log.Println("host: ", host)
+                return false
+            } else {
+                return true
+            }
         default:
             return false
     }
