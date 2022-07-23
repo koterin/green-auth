@@ -4,3 +4,4 @@
 *.env
 *golangci.yml
 *ssh*
+todo.md
