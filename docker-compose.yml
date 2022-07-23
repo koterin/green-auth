@@ -40,6 +40,7 @@ services:
       - TG_BOT_KEY=${TG_BOT_KEY}
       - HOST_URL=${HOST_URL}
       - API_KEY=${API_KEY}
+      - CODE_LENGTH=7
     volumes:
       - /etc/green-auth/.db-secret:/green-auth/.db-secret:ro
 

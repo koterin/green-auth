@@ -19,14 +19,14 @@ func main() {
         p.Fail("Error: TG_BOT_KEY not set")
     }
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
+    c := make(chan os.Signal, 1)
+    signal.Notify(c, os.Interrupt)
 
-	ctx, cancel := context.WithCancel(context.Background())
+    ctx, cancel := context.WithCancel(context.Background())
 
-	go utils.StartTelegramBot(ctx, args.TG_BOT_KEY)
+    go utils.StartTelegramBot(ctx, args.TG_BOT_KEY)
 
-	<-c
-	cancel()
+    <-c
+    cancel()
 }
 

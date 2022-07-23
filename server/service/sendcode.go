@@ -31,7 +31,7 @@ func generate_code(length int) string {
 
 func sendTelegramMsg(chat_id string, code string) {
     code = "`" + code + "`"
-    requestURL := TELEGRAM_URL + "bot" + TELEGRAM_BOT_KEY + "/sendMessage" +
+    requestURL := Args.TG_API_URL + "bot" + Args.TG_BOT_KEY + "/sendMessage" +
                   "?chat_id=" + chat_id + "&text=" + code + "&parse_mode=markdown"
     resp, err := PassClient.Get(requestURL)
 

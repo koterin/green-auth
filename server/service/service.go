@@ -5,31 +5,12 @@ import (
         "net/url"
         "encoding/json"
         "io/ioutil"
-        "os"
         "path/filepath"
         "net/http/httputil"
         "log"
 
         "green-auth/dbhandler"
 )
-
-var TELEGRAM_URL = os.Getenv("TG_API_URL")
-var TELEGRAM_BOT_KEY = os.Getenv("TG_BOT_KEY")
-var API_KEY = os.Getenv("API_KEY")
-var CODE_LENGTH = 7
-var PASSWORD_LENGTH = 8
-
-var UnathorizedPages [10]string = [10]string{"/main.css", "/index.js", "/index.html",
-                                  "/", "/authenticate.html", "/auth.js", "/theme.js",
-                                  "/images/tg_qr.png", "/favicon.ico", "/wrongredirect.html"}
-var HOST_URL = os.Getenv("HOST_URL")
-var Loginpage = HOST_URL
-var Homepage = HOST_URL + "/home.html"
-var WrongRedirectPage = HOST_URL + "/wrongredirect.html"
-
-var Filename = "servicepswd/.service"
-var INTERNAL_ERROR_MSG = "Internal Error"
-var OPTIONS = "OPTIONS"
 
 type ResponseData struct {
     Email    string  `json:"email"`
@@ -45,19 +26,6 @@ type Answer struct {
     Response    string  `json:"response"`
     Login       string  `json:"login"`
     Password    string  `json:"password"`
-}
-
-func CorsHandler(w http.ResponseWriter, req *http.Request) {
-    AddBasicHeaders(w)
-    w.WriteHeader(http.StatusOK)
-
-    answer := Answer {
-                        Status: 200,
-                        Response: "CORS, I see you mthfckr!1!",
-                     }
-    json.NewEncoder(w).Encode(answer)
-
-    return
 }
 
 func ReadJson(w http.ResponseWriter, req *http.Request, respdata *ResponseData) (error) {
@@ -79,7 +47,7 @@ func ReadJson(w http.ResponseWriter, req *http.Request, respdata *ResponseData) 
 }
 
 func AddBasicHeaders(w http.ResponseWriter) {
-    w.Header().Set("Access-Control-Allow-Origin", HOST_URL)
+    w.Header().Set("Access-Control-Allow-Origin", Args.HOST_URL)
     w.Header().Set("Access-Control-Allow-Credentials", "true")
     w.Header().Set("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT")
     w.Header().Set("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers")
@@ -121,7 +89,7 @@ func GetCookie(req *http.Request) bool {
 
     origin := req.Header.Get("X-Green-Origin");
     if ((origin == "null") || (origin == "")) {
-        aUrl, _ := url.Parse(HOST_URL)
+        aUrl, _ := url.Parse(Args.HOST_URL)
         origin = aUrl.Host
     }
 
@@ -157,7 +125,7 @@ func checkRedirect(w http.ResponseWriter, req *http.Request) uint {
 
 func CheckApiKey(req *http.Request) bool {
     key := req.Header.Get("Api-Key")
-    if key == API_KEY {
+    if key == Args.API_KEY {
         return true
     }
 

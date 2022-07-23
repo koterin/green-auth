@@ -5,3 +5,4 @@
 *golangci.yml
 *ssh*
 todo.md
+*.db-secret
