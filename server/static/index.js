@@ -44,6 +44,10 @@ function errorEmailMsg() {
     emailValidateMsg.innerHTML = "а ты зарегистрирован? если что - qr-код ниже";
 }
 
+function errorAccessMsg(resource) {
+    emailValidateMsg.innerHTML = "у тебя нет доступа к " + resource;
+}
+
 function errorSendCodeMsg() {
     emailValidateMsg.innerHTML = "при отправке кода что-то пошло не так. давай еще";
 }
@@ -62,6 +66,10 @@ function errorReloadPageMsg() {
 
 function openTG() {
     location.href = TelegramBotUrl;
+}
+
+function deleteRedirectFromStorage() {
+    sessionStorage.removeItem('redirect');
 }
 
 // POST /api/checkEmail
@@ -92,6 +100,10 @@ async function checkEmail() {
                 proceedBtn.disabled = true;
                 errorEmailMsg();
                 return Promise.reject(response.status);
+            } else if (response.status == '401') {
+                proceedBtn.disabled = true;
+                errorAccessMsg();
+                deleteRedirectFromStorage();
             } else {
                 console.log("Internal Error");
                 errorReloadPageMsg();
