@@ -1,3 +1,5 @@
 *swp
 *.crt
 *.key
+*.env
+docker-compose*

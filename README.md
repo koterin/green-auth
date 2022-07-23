@@ -1,133 +1,89 @@
-# green-auth Service
+# Password Manager
 
-Simple authorization service serving as a firewall for all your online content
+Сервис для генерации паролей для различных внутренних сервисов Бери Заряд
 
-## Build
+## Сборка
 
-> For building you'll need `ansible` and `ansible-playbook` installed on your machine
+> Для запуска скрипта потребуется установленный `ansible`
 
-To build `green-auth` you need to:
-
-1. Download the Repo
+Чтобы собрать сервис, требуется:
+1. Скачать репозиторий
 
 ```
-git clone git@github.com:koterin/green-auth.git
+git clone git@gitlab.com:berizaryad_project/devops/passwordmanager.git
 ```
 
-2. Add the IP-address of the machine which will host `green-auth` to the `/green-auth.yaml` ansible script in the host section. `green-host` is written as an example
-4. Add to the `/configs/nginx` folder on the current machine SSL-sertificates for your site - `.crt` and `.key` files
-5. Generate SSH-keys for the backend server:
-Generate them with the command
+2. Зайти в созданную папку `passwordManager`
+3. Добавить IP-адрес нужной машины в свой iventory-файл (или `ansible-hosts`) под именем `password-host`
+4. Добавить в папку `/configs/nginx` SSL-сертификаты для NGINX - .crt и .key
+5. Сгенерировать ssh-ключи для контейнера бэкенда - и положить внутрь репозитория в /server:
+Генерация - с помощью команды
 ```
-ssh-keygen -f ~/[PATH]/green-auth/server/ssh_green-auth_key -t rsa
+ssh-keygen -f ~/[PATH>]/password-manager/server/ssh_password-manager_key -t rsa
 ```
-where `[PATH]` - path to the `green-auth` folder on your machine.
+где `[PATH]` - путь до репозитория менеджера.
 
-6. Add the public SSH key to the Deploy keys of the Repo with the passwords (GitLab or GitHub - doesn't matter)
+6. Добавить публичный ключ (сгенерированный `~/password-mananager/ssh_password-manager_key.pub` в Deploy Keys [репозитория с паролями для сервисной карты.](https://gitlab.com/berizaryad_project/devops/servicepswd/-/tree/main))
 
-7. Change the names of your added `.crt` and `.key` files in the `/green-auth.yaml` script - find the comments pointing to those places.
-
-8. Change the name of the site and stuff in your NGINX config:
-
-TBD
-
-9. Create your TG-bot and add its key to the `/docker-compose.yaml` file (follow the comments)
-
-10. Change the global vars in `/server/service/service.go` for you website URL (see comments - line 22, 23, 74)
-
-11. Change the site links to your URL in `/server/static/index.js`, `/server/static/auth.js` and `/server/static/home.js` (follow the comments)
-
-12. Start the script
+7. Запустить скрипт
 ```
-./green-auth.yaml
+./password-manager.yaml
 ```
-It will install all neccessary dependencies on your host machine and start the `green-auth`-service via Docker.
 
-## Main info
+## Общая информация
 
-Green-auth Service consists of:
+Сервис состоит из:
 
-- HTTP-server (GO)
-- Client part (static HTML-pages + .js-scripts and .css-styles)
-- Proxy (NGINX)
-- PostgreSQL Database
-- Funny captions
+- HTTP-сервера на GO
+- Клиентской части - статичных HTML-страниц (+ .JS-скрипты и .css-стили)
+- Прокси - NGINX
+- Веселых текстов
 
-Server starts via Docker container on the `8080` port. All static pages are returned from the backend, even the authorization-free ones (for example, log in pages).
+Сервер запускается в Docker-контейнере на внутреннем порте `8080`, порт контейнера прокинут на порт машины `8080`; проксируется с помощью NGINX.
+Все страницы возвращаются с бэкенда, а не NGINX (даже доступные без авторизации).
 
-## Roles
+## Роли
 
-Service has 3 roles described:
-
+В сервисе определены 3 роли:
   - admin
-    - Able to perform any action on the site
+    - Может совершать любые действия на сайте
   - dev
-    - Able to use Swagger
-    - Able to see the account list
-    - Unable to generate new accounts
+    - Может пользоваться Swagger
+    - Может просматривать список учетных записей сервисной карты (в зашифрованном виде)
+    - Не может генерировать пароли для сервисной карты
   - service
-    - Able to see the account list
-    - Able to generate new accounts
-    - Unable to see Swagger
+    - Может просматривать список учетных записей сервисной карты (в зашифрованном виде)
+    - Может генерировать пароли для сервисной карты
+    - Не может просматривать Swagger
 
-## If you need to change something
+## Если надо что-то поменять
 
-1. If you need to set unique credentials for the user who will be the author of the commits made by the `green-auth`, you'll have to adjust those lines in the `/server/Dockerfile`:
-
+1. Если требуется задать уникальные креды для пользователя, от лица которого бэкенд будет совершать коммиты в репозиторий с паролями - следует править эти строки в `/server/Dockerfile`:
 ```
-RUN git config --global user.email "green.auth@sample.com"
-RUN git config --global user.name "green-auth"
+RUN git config --global user.email "password@berizaryad.ru"
+RUN git config --global user.name "password-manager"
  ```
 
-2. If you need to add new user you'll have to make an `INSERT` into the database:
-   1. Enter the target Docker container with your running database (`green-db`):
+2. Если надо добавить нового пользователя - следует сделать INSERT в базу данных сервиса:
+    1. Зайти в нужный контейнер с базой данных (password-db):
     ```
-    docker exec -it green-db psql -d green-db -U green-manager
+    docker exec -it password-db psql -d password-db -U password-manager
     ```
-    2. Add the user:
+    2. Добавить пользователя:
     ```
-    INSERT INTO users VALUES (DEFAULT, '[USERNAME]@[SAMPLE].com', '[CHAT_ID]', '[ROLE]', DEFAULT, DEFAULT);
+    INSERT INTO users VALUES (DEFAULT, '[USERNAME]@berizaryad.ru', '[CHAT_ID]', '[ROLE]', DEFAULT, DEFAULT)
     ```
-    where `[USERNAME]` - user login, `[CHAT_ID]` - received Telegram chat_id of the user and the bot, `[ROLE]` - user's assigned role (`admin`, `dev` or `service`).
+    где `[USERNAME]` - логин пользователя (или часть реальной почты), `[CHAT_ID]` - полученный chat_id пользователя в Телеграм-боте, `[ROLE]` - роль пользователя (admin или user).
+    > ВАЖНО! Следует осторожно выдавать роль админа. Такой пользователь сможет свободно управлять паролями учетных записей сервисной карты.
 
-    > ATTENTION! Please, assign the `admin` role carefully. A user with admin rights may take some unrecoverable actions.
-
-3. You may wanna set your users list with the database initialization, without the manual input. In that case add to your `/db/init.sql` file a line like that:
+3. Можно добавить авторизованного пользователя сразу при создании базы данных. В таком случае в файл `/db/init.sql` следует добавить строку:
 ```
 INSERT INTO users (id, email, chat_id, role, created_at, updated_at)
-VALUES (DEFAULT, '[USERNAME]@[SAMPLE].com', '%CHAT_ID%', '%ROLE%', DEFAULT, DEFAULT);
+VALUES (DEFAULT, '%USERNAME%@berizaryad.ru', '%CHAT_ID%', '%ROLE%', DEFAULT, DEFAULT);
 ```
-where the meaning of the fields is the same as explained in the 2.2 step.
+где `%CHAT_ID%` - полученный chat_id пользователя в Телеграм-боте, `%ROLE%` - роль пользователя (admin или user).
 
-## How the authorization works
-
-### Log In
-
-When user is registered (see step 2 above) he may authorize via `green-auth`.
-
-First he must provide his login; you may add exclusive pattern for matching those logins (for example, only emails for some particular domain) in the `/server/static/index.html` file. Current pattern set to 2-20 symbols.
-Once the field is validated, the Proceed Button activates.
-
-### Validate login
-
-Proceed button sends request to the backend; it checks if that login actually exists in the database. In the negative case the message `incorrect login` appears and Proceed Button is deactivated again (until some letters are changed in the input field). If the login is correct, user is being redirected to the OTP-page.
-
-### One Time Password
-
-One Time Password (OTP) is being generated as a 7-digit sequence. Backend sends it via Telegram API to the Telegram Chat between the user and the Bot.
-
-As it's sent with the code style formatting, user may just click on the code (on the PC) to copy it to the clipboard.
-
-Next the code must be inserted in the code input field on the `green-auth` site. If the code is incorrect, user will see the message `wrong code`. If he inserts wrong codes 5 times in a row, he will be asked to get the new code (attempts are being checked for security reasons). 
-
-So the rules for the OTP are:
-   - No more than 5 attempts to insert wrong code (without getting the new one)
-   - No more than 5 attempts to get the code (5 messages) in 5 minutes
-   - No more than 1 attempt to get the code (1 message) in 30 seconds
-
-If the code is right, user will be redirected to the Homepage.
-
-### Generate passwords
+## Генерация паролей
 
 Those are the extras mentioned before: it may serve as a login-pass generator.
 
@@ -158,17 +114,3 @@ Instead of asking for a login input it waits for the number of accounts to be cr
 
 Logins for the accounts created this way will be all sequential: `green25`, etc.
 
-### Swagger
-
-Another feature of the site - swagger firewalling.
-
-Swagger's default use mode - static pages - don't provide any authorization feature (to see and use your methods). So `green-auth` solves it.
-
-Put your swagger-definition file in the `/server/static/swagger/swagger.yaml` and build the server.
-
-> Keep in mind that all frontend pages and Swagger included lie in the server Docker container, so you'll have to rebuild the container with every change or edit those files directly in the container.
-
-> Little tip: to edit files in the running server Docker container print this:
-```
-docker exec -it green-server bash
-```

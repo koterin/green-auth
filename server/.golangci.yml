@@ -1,0 +1,30 @@
+linters:
+  disable-all: true
+  enable:
+    - deadcode
+  #  - errcheck
+  #  - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    - varcheck
+    - asciicheck
+    - bidichk
+    - decorder
+    - dogsled
+    - dupl
+    - durationcheck
+  #  - errchkjson
+    - errname
+    - errorlint
+    - execinquery
+    - exhaustive
+    - funlen
+  #  - gci
+    - goconst
+    - gosec
+    - misspell
+    - whitespace
+    - wsl
