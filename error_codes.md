@@ -17,8 +17,10 @@
 | 15 | Error while adding changes to passwords file in GitAdd |
 | 16 | Error while committing file in GitCommit |
 | 17 | Error while pushing changes in GitPush |
+
 | 18 | Error while pulling passwords file in GitPullRepo |
 | 19 | Error while opening passwords file in GitPullRepo |
+
 | 20 | Error unmarshalling JSON in PostMultiGeneratePass |
 | 21 | Error while sending request to Telegram |
 | 22 | Error while reading TG response body |

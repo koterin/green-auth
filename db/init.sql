@@ -21,11 +21,3 @@ attempts INT,
 user_id UUID REFERENCES users(id),
 created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP);
-
-INSERT INTO users VALUES (DEFAULT, 'e.green@berizaryad.ru', '392476956', 'admin', DEFAULT, DEFAULT);
-INSERT INTO users VALUES (DEFAULT, 'n.gavrilenkov@berizaryad.ru', '52369165', 'admin', DEFAULT);
-INSERT INTO users VALUES (DEFAULT, 'r.ivashkov@berizaryad.ru', '119970527', 'dev', DEFAULT);
-INSERT INTO users VALUES (DEFAULT, 'k.magurin@berizaryad.ru', '594391257', 'dev', DEFAULT);
-INSERT INTO users VALUES (DEFAULT, 'sokolovkaa@berizaryad.ru', '56231997', 'dev', DEFAULT);
-INSERT INTO users VALUES (DEFAULT, 'myakotin@berizaryad.ru', '563142151', 'admin', DEFAULT);
-
