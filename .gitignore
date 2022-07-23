@@ -2,3 +2,5 @@
 *.crt
 *.key
 *.env
+*golangci.yml
+*ssh*
