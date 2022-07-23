@@ -1,0 +1,53 @@
+version: "3.5"
+
+volumes:
+  auth-db-volume:
+    name: auth-db-volume
+
+services:
+  auth-db:
+    hostname: auth-db
+    container_name: auth-db
+    hostname: auth-db
+    image: "postgres:14"
+    restart: "unless-stopped"
+    environment:
+      - POSTGRES_DB=auth-db
+      - POSTGRES_USER=auth-manager
+      - POSTGRES_PASSWORD_FILE=/etc/green-auth/.db-secret
+    volumes:
+      - /etc/green-auth/.db-secret:/etc/green-auth/.db-secret:ro
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - auth-db-volume:/var/lib/postgresql/data
+
+  auth-server:
+    hostname: auth-server
+    container_name: auth-server
+    image: "auth-server"
+    build: ./server
+    restart: unless-stopped
+    ports:
+      - "8080"
+    depends_on:
+      - auth-db
+    environment:
+      - DB_HOST=auth-db
+      - DB_USER=auth-auth
+      - DB_PORT=5432
+      - DB_PASSWORD_FILE=/green-auth/.db-secret
+      - DB_NAME=auth-db
+      - TG_API_URL=https://api.telegram.org/
+      - TG_BOT_KEY=${TG_BOT_KEY}
+      - HOST_URL=${HOST_URL}
+      - API_KEY=${API_KEY}
+    volumes:
+      - /etc/green-auth/.db-secret:/green-auth/.db-secret:ro
+
+  auth-bot:
+    hostname: auth-bot
+    image: "auth-bot"
+    container_name: auth-bot
+    build: ./telegram
+    restart: unless-stopped
+    environment:
+      - TG_BOT_KEY=${TG_BOT_KEY}

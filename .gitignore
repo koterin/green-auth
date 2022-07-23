@@ -2,4 +2,3 @@
 *.crt
 *.key
 *.env
-docker-compose*
